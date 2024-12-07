@@ -1,5 +1,5 @@
 {
-  "name": "easydl",
+  "name": "@openanime/easydl",
   "version": "1.1.1",
   "description": "Easily download a file and save it to local disk. It supports resuming previously downloaded files, multi-connection/parallel downloads, and retry on fail out of the box!",
   "main": "dist/index.js",
@@ -22,6 +22,9 @@
   "files": [
     "dist/*"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "download",
     "downloader",
