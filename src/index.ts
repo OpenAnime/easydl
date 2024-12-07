@@ -206,7 +206,7 @@ interface EasyDl extends EventEmitter {
  *   })
  * ```
  *
- * For advanced usages, such as handling progress information please see [DOCS](https://github.com/andresusanto/easydl)
+ * For advanced usages, such as handling progress information please see [DOCS](https://github.com/OpenAnime/easydl)
  */
 class EasyDl extends EventEmitter {
   private _started: boolean = false;
@@ -244,10 +244,10 @@ class EasyDl extends EventEmitter {
    * it will add the file name automaticaly.
    * @param {Options} options Configurable download options:
    * - `connections` - Number of parallel connections
-   * - `existBehavior` - What to do if the destination file exists ([details](https://github.com/andresusanto/easydl))
+   * - `existBehavior` - What to do if the destination file exists ([details](https://github.com/OpenAnime/easydl))
    * - `followRedirect` - Whether `EasyDl` should follow HTTP redirection.
    * - `httpOptions` - Options passed to the http client
-   * - `chunkSize` - The size of chunks of the file. ([details](https://github.com/andresusanto/easydl))
+   * - `chunkSize` - The size of chunks of the file. ([details](https://github.com/OpenAnime/easydl))
    * - `maxRetry` - Maximum number of retries when error occured
    * - `retryDelay` - Delay before attempting to retry in ms
    * - `retryBackoff` - Incremental back-off after each retry in ms

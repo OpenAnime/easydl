@@ -13,12 +13,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andresusanto/easydl"
+    "url": "https://github.com/OpenAnime/easydl"
   },
   "bugs": {
-    "url": "https://github.com/andresusanto/easydl/issues"
+    "url": "https://github.com/OpenAnime/easydl/issues"
   },
-  "homepage": "https://github.com/andresusanto/easydl",
+  "homepage": "https://github.com/OpenAnime/easydl",
   "files": [
     "dist/*"
   ],

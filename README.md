@@ -8,6 +8,7 @@ Easily download a file and save it to a local disk. It supports resuming previou
 
 - Resumes previous downloads, even after the program has terminated.
 - Faster download speed with multiple concurrent connections.
+- Proxy support.
 - Automatic retry on failure.
 - Supports HTTP redirects with redirect loop detection.
 - No native, 100% Javascript code with zero dependency.
@@ -59,7 +60,7 @@ new EasyDl("https://proof.ovh.net/files/10Gb.dat", "~/Downloads")
 ```
 
 - See all available options [here](#constructor).
-- See all examples [here](https://github.com/andresusanto/easydl/tree/master/examples).
+- See all examples [here](https://github.com/OpenAnime/easydl/tree/master/examples).
 
 ---
 
@@ -252,7 +253,7 @@ const dl = new EasyDl(url, dest, opts)
 
 <img src="https://user-images.githubusercontent.com/7076809/82736366-a0525300-9d6c-11ea-9ec5-e22dda09131f.png" alt="Demo CLI" width="600"/>
 
-A CLI version of `EasyDl` is available as a separate package [easydl-cli](https://github.com/andresusanto/easydl-cli).
+A CLI version of `EasyDl` is available as a separate package [easydl-cli](https://github.com/OpenAnime/easydl-cli).
 
 ## API
 
