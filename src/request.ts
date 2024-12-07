@@ -1,6 +1,8 @@
 import * as http from "http";
 import * as https from "https";
 import { EventEmitter } from "events";
+import { HttpsProxyAgent } from "https-proxy-agent";
+import { HttpProxyAgent } from "http-proxy-agent";
 
 interface Engine {
   request: {
@@ -82,16 +84,22 @@ interface Request extends EventEmitter {
 class Request extends EventEmitter {
   destroyed: boolean;
   address: string;
+  proxyURL?: string;
   options: http.RequestOptions;
   private _end: boolean;
   private _engine: Engine;
   private _req?: http.ClientRequest;
 
-  constructor(address: string, options?: http.RequestOptions) {
+  constructor(
+    address: string,
+    options?: http.RequestOptions,
+    proxyURL?: string
+  ) {
     super();
     this.destroyed = false;
     this.address = address;
     this._end = false;
+    this.proxyURL = proxyURL;
     this.options = Object.assign(
       {
         method: "GET",
@@ -110,7 +118,18 @@ class Request extends EventEmitter {
     if (this.destroyed)
       throw new Error("Calling start() with a destroyed Request.");
 
-    this._req = this._engine.request(this.address, this.options, (res) => {
+    let options = this.options;
+
+    if (this.proxyURL) {
+      const isHttps = this.address.startsWith("https");
+      const agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)(
+        this.proxyURL
+      );
+
+      options = Object.assign(options, { agent });
+    }
+
+    this._req = this._engine.request(this.address, options, (res) => {
       this.emit("ready", {
         statusCode: res.statusCode || 500,
         headers: res.headers,
@@ -137,7 +156,18 @@ class Request extends EventEmitter {
     if (this.destroyed)
       throw new Error("Calling start() with a destroyed Request.");
 
-    this._req = this._engine.request(this.address, this.options, (res) => {
+    let options = this.options;
+
+    if (this.proxyURL) {
+      const isHttps = this.address.startsWith("https");
+      const agent = new (isHttps ? HttpsProxyAgent : HttpProxyAgent)(
+        this.proxyURL
+      );
+
+      options = Object.assign(options, { agent });
+    }
+
+    this._req = this._engine.request(this.address, options, (res) => {
       this.emit("ready", {
         statusCode: res.statusCode || 500,
         headers: res.headers,
@@ -202,16 +232,21 @@ export async function followRedirect(
 export async function requestHeader(
   address: string,
   options?: http.RequestOptions,
-  methodFallback?: boolean
+  methodFallback?: boolean,
+  proxyURL?: string
 ): Promise<RequestReadyData> {
-  const req = new Request(address, {
-    ...options,
-    headers: {
-      ...options?.headers,
-      ...(methodFallback && { Range: "bytes=0-0" }),
+  const req = new Request(
+    address,
+    {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...(methodFallback && { Range: "bytes=0-0" }),
+      },
+      method: methodFallback ? "GET" : "HEAD",
     },
-    method: methodFallback ? "GET" : "HEAD",
-  }).end();
+    proxyURL
+  ).end();
 
   const res = await Promise.race([
     new Promise<RequestReadyData>((res) => req.once("ready", res)),

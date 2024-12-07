@@ -33,7 +33,7 @@ yarn add easydl
 ```js
 try {
   const completed = await new EasyDl(
-    "http://www.ovh.net/files/1Gio.dat",
+    "https://proof.ovh.net/files/1Gb.dat",
     "/tmp/1GB.zip",
     { connections: 10, maxRetry: 5 }
   ).wait();
@@ -48,7 +48,7 @@ or if you prefer using the `Promise` chain:
 ```js
 const EasyDl = require("easydl");
 
-new EasyDl("http://www.ovh.net/files/10Gio.dat", "~/Downloads")
+new EasyDl("https://proof.ovh.net/files/10Gb.dat", "~/Downloads")
   .wait()
   .then((completed) => {
     console.log("Downloaded?", completed);
@@ -105,7 +105,7 @@ And you will get something like this:
   chunks: [10485760, 10485760 ....],    // size of each chunks
   isResume: true,                       // whether the current download resumes previous download (using detected chunks)
   progress: [100, 0, 100 .....],        // current progress of each chunk, values should be 0 or 100
-  finalAddress: 'http://www.ovh.net/files/100Mio.dat', // final address of the file, if redirection occured, it will be different from the original url
+  finalAddress: 'https://proof.ovh.net/files/100Mb.dat', // final address of the file, if redirection occured, it will be different from the original url
   parallel: true,                        // whether multi-connection download is supported
   resumable: true,                      // whether the download can be stopped and resumed back later on (some servers do not support/allow it)
   headers: {
@@ -309,7 +309,7 @@ You can get the metadata by using the `.metadata()` function or listening to the
   chunks: [10485760, 10485760 ....],
   isResume: true,
   progress: [100, 0, 100 .....],
-  finalAddress: 'http://www.ovh.net/files/100Mio.dat',
+  finalAddress: 'https://proof.ovh.net/files/100Mb.dat',
   parallel: true,
   resumable: true,
   headers: {

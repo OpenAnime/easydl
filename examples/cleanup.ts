@@ -15,7 +15,7 @@ import EasyDl from "../dist";
 
 function createDownload(output: string) {
   const dl = new EasyDl(
-    "http://www.ovh.net/files/10Mio.dat",
+    "https://proof.ovh.net/files/10Mb.dat",
     `/tmp/${output}.dat`
   ).on("progress", ({ total }) => {
     // stop the download at 50% so that we have chunk files left

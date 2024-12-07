@@ -13,8 +13,8 @@ import EasyDl from "../dist";
  */
 const files = [
   // Files without redirection:
-  ["http://www.ovh.net/files/100Mio.dat", "./100Mio.dat"],
-  ["http://www.ovh.net/files/1Mio.dat", "./1Mio.dat"],
+  ["https://proof.ovh.net/files/100Mb.dat", "./100Mio.dat"],
+  ["https://proof.ovh.net/files/1Mb.dat", "./1Mio.dat"],
 
   // Files with redirects:
   ["https://github.com/torvalds/linux/archive/v5.7-rc6.zip", "./Redirect.dat"],

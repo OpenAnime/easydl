@@ -33,6 +33,8 @@ interface Options {
   reportInterval?: number;
   /** Use GET method instead of HEAD for requesting headers */
   methodFallback?: boolean;
+  /** Use a specified proxy URL */
+  proxyURL?: string;
 }
 
 interface RetryInfo {
@@ -314,7 +316,8 @@ class EasyDl extends EventEmitter {
       const headerResult = await requestHeader(
         this._url,
         this._opts.httpOptions,
-        this._opts.methodFallback
+        this._opts.methodFallback,
+        this._opts.proxyURL
       );
       if (headerResult.statusCode !== 200 && headerResult.statusCode !== 206)
         throw new Error(`Got HTTP response ${headerResult.statusCode}`);
@@ -442,7 +445,11 @@ class EasyDl extends EventEmitter {
         });
       }
 
-      this._reqs[id] = new Request(this.finalAddress, opts);
+      this._reqs[id] = new Request(
+        this.finalAddress,
+        opts,
+        this._opts.proxyURL
+      );
       let size = (range && range[1] - range[0] + 1) || 0;
       const fileName = `${this.savedFilePath}.$$${id}$PART`;
       let error: Error | null = null;

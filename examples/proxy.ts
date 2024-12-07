@@ -6,8 +6,8 @@
  */
 import EasyDl from "../dist";
 
-const dl = new EasyDl("https://proof.ovh.net/files/100Mb.dat", "/tmp/100MB", {
-  connections: 10,
+const dl = new EasyDl("https://ipinfo.io/json", ".tmp/proxy_result.json", {
+  connections: 1,
   httpOptions: {
     headers: {
       "User-Agent": "EasyDL",
@@ -15,6 +15,7 @@ const dl = new EasyDl("https://proof.ovh.net/files/100Mb.dat", "/tmp/100MB", {
   },
   maxRetry: 10,
   existBehavior: "overwrite",
+  proxyURL: "YOUR_PROXY_URL",
 })
   .on("metadata", (meta) => {
     console.log("download has been started");

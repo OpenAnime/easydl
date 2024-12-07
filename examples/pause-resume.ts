@@ -7,9 +7,13 @@
 import EasyDl from "../dist";
 
 (async () => {
-  const dl = new EasyDl("http://www.ovh.net/files/100Mio.dat", "/tmp/100.dat", {
-    chunkSize: 10 * 1024 * 1024, // 10 MB chunk
-  });
+  const dl = new EasyDl(
+    "https://proof.ovh.net/files/100Mb.dat",
+    "/tmp/100.dat",
+    {
+      chunkSize: 10 * 1024 * 1024, // 10 MB chunk
+    }
+  );
 
   const metadata = await dl.metadata();
   console.log("got metadata", metadata);
@@ -49,7 +53,7 @@ async function otherPartOfTheApp() {
   // downloaded chunks instead of re-downloading already downloaded chunks.
 
   const otherDl = new EasyDl(
-    "http://www.ovh.net/files/100Mio.dat",
+    "https://proof.ovh.net/files/100Mb.dat",
     "/tmp/100.dat",
     {
       // chunk size must remain the same with the previous download if

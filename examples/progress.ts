@@ -7,7 +7,7 @@
 import EasyDl from "../dist";
 
 (async () => {
-  const dl = new EasyDl("http://www.ovh.net/files/100Mio.dat", "/tmp", {
+  const dl = new EasyDl("https://proof.ovh.net/files/100Mb.dat", "/tmp", {
     reportInterval: 3500,
   });
   const completed = await dl
