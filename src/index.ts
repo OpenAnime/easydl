@@ -367,6 +367,7 @@ class EasyDl extends EventEmitter {
     if (!this._reqs[id]) return;
     this._reqs[id].destroy();
     delete this._reqs[id];
+    this._completeChunkProgress(id);
     this._report(id, true);
     this.partsProgress[id].speed = 0;
     this._workers -= 1;
@@ -413,12 +414,31 @@ class EasyDl extends EventEmitter {
       this._speedRef.bytes = <number>this.totalProgress.bytes;
       this._speedRef.time = now;
 
-      if (this.listenerCount("progress") > 0)
-        this.emit("progress", {
-          total: this.totalProgress,
-          details: this.partsProgress,
-        });
+      this._emitProgress();
     }
+  }
+
+  private _completeChunkProgress(id: number) {
+    this.partsProgress[id].percentage = 100;
+
+    if (!this.size && this._totalChunks === 1) {
+      this.size = <number>this.totalProgress.bytes;
+    }
+
+    if (this.size && <number>this.totalProgress.bytes >= this.size) {
+      this.totalProgress.percentage = 100;
+    } else if (!this.size && this._downloadedChunks + 1 === this._totalChunks) {
+      this.totalProgress.percentage = 100;
+    }
+  }
+
+  private _emitProgress() {
+    if (this.listenerCount("progress") === 0) return;
+
+    this.emit("progress", {
+      total: { ...this.totalProgress },
+      details: this.partsProgress.map((progress) => ({ ...progress })),
+    });
   }
 
   private _getSizeFromIncomingHttpHeaders(headers: http.IncomingHttpHeaders) {
@@ -640,7 +660,10 @@ class EasyDl extends EventEmitter {
         this._calcRanges();
         await this._syncJobs();
         this._totalChunks = this._ranges.length;
-        if (!this._jobs.length) this._buildFile();
+        if (!this._jobs.length) {
+          this._emitProgress();
+          this._buildFile();
+        }
         else this._processChunks();
       } else {
         if (this.headers && this.headers["content-length"])
