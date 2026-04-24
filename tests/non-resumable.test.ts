@@ -105,11 +105,13 @@ it("should download a file with unknown size and combine it correctly", async ()
     .mockImplementation(mockNonResumableRequestWithUnknownSize());
 
   const onMetadata = jest.fn();
+  const onProgress = jest.fn();
 
   const { fullFileLocation } = createTmpFile();
 
   await new EasyDl("https://susan.to", fullFileLocation)
     .on("metadata", onMetadata)
+    .on("progress", onProgress)
     .wait();
 
   expect(hashFile(fullFileLocation)).toBe(files["100Mb"].fileHash);
@@ -122,6 +124,21 @@ it("should download a file with unknown size and combine it correctly", async ()
       isResume: false,
       resumable: false,
       size: 0,
+    })
+  );
+
+  expect(onProgress).toHaveBeenLastCalledWith(
+    expect.objectContaining({
+      total: expect.objectContaining({
+        percentage: 100,
+        bytes: files["100Mb"].size,
+      }),
+      details: [
+        expect.objectContaining({
+          percentage: 100,
+          bytes: files["100Mb"].size,
+        }),
+      ],
     })
   );
 

@@ -1,5 +1,6 @@
 import http from "http";
 import https from "https";
+import fs from "fs";
 
 import { hashFile } from "./utils/hash";
 import { files, createTmpFile } from "./utils/files";
@@ -268,14 +269,54 @@ it("should resume previous download", async () => {
       .wait()
   ).resolves.toBe(true);
 
-  // 1 HEAD + 9 parts (out of 10)
-  expect(resumeRequest).toHaveBeenCalledTimes(10);
+  // 1 HEAD + 8 remaining parts (out of 10)
+  expect(resumeRequest).toHaveBeenCalledTimes(9);
 
   expect(onMetadataResume).toHaveBeenCalledWith(
     expect.objectContaining({
       isResume: true,
       resumable: true,
       progress: expect.arrayContaining([100]),
+    })
+  );
+});
+
+it("should emit 100% progress when all chunks are already downloaded", async () => {
+  const request = jest
+    .spyOn(http, "request")
+    .mockImplementation(mockResumableRequest(files["10Mb"]));
+  const onProgress = jest.fn();
+  const chunkSize = 1024 * 1024;
+  const { fullFileLocation } = createTmpFile();
+
+  for (let i = 0; i < 10; i += 1) {
+    fs.writeFileSync(
+      `${fullFileLocation}.$$${i}`,
+      files["10Mb"].file.subarray(i * chunkSize, (i + 1) * chunkSize)
+    );
+  }
+
+  await expect(
+    new EasyDl("http://using-http.susan.to", fullFileLocation, {
+      chunkSize,
+      connections: 2,
+    })
+      .on("progress", onProgress)
+      .wait()
+  ).resolves.toBe(true);
+
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(hashFile(fullFileLocation)).toBe(files["10Mb"].fileHash);
+  expect(onProgress).toHaveBeenCalledTimes(1);
+  expect(onProgress).toHaveBeenLastCalledWith(
+    expect.objectContaining({
+      total: expect.objectContaining({
+        percentage: 100,
+        bytes: files["10Mb"].size,
+      }),
+      details: expect.arrayContaining([
+        expect.objectContaining({ percentage: 100 }),
+      ]),
     })
   );
 });
