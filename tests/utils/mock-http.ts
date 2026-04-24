@@ -88,6 +88,7 @@ export function createMockHTTP(mockOpts: MockHTTPOption) {
       on() {},
       end() {},
       destroy() {},
+      setTimeout(_ms: number, _cb?: () => void) {},
     } as any;
   }) as typeof request;
 }

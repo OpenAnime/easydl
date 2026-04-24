@@ -142,7 +142,17 @@ class Request extends EventEmitter {
       res.on("data", (chunk) => this.emit("data", chunk));
       res.on("error", (error) => this.emit("error", error));
     });
+
+    const timeoutMs = Number(this.options.timeout ?? 30000);
+
     this._req.on("error", (error) => this.emit("error", error));
+
+    this._req.setTimeout(timeoutMs, () => {
+      this._req!.destroy(
+        new Error(`Request timed out after ${timeoutMs}ms without activity`)
+      );
+    });
+
     process.nextTick(() => (<http.ClientRequest>this._req).end());
     return this;
   }
@@ -181,7 +191,17 @@ class Request extends EventEmitter {
       res.on("data", (chunk) => this.emit("data", chunk));
       res.on("error", (error) => this.emit("error", error));
     });
+
+    const timeoutMs = Number(this.options.timeout ?? 30000);
+
     this._req.on("error", (error) => this.emit("error", error));
+
+    this._req.setTimeout(timeoutMs, () => {
+      this._req!.destroy(
+        new Error(`Request timed out after ${timeoutMs}ms without activity`)
+      );
+    });
+
     process.nextTick(() => (<http.ClientRequest>this._req).end());
     return this;
   }
